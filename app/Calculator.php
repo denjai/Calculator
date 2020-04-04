@@ -2,43 +2,77 @@
 
 namespace App;
 
+use App\Entities\Operation;
+use App\Entities\LegalPerson;
+use App\Entities\NaturalPerson;
+
 /**
- * Description of Calculator
+ * Commission fee calculator.
  *
  * @author Doncho Toromanov
  */
 class Calculator
 {
+    /**
+     * @var array 
+     */
     private $operations;
     
+    /**
+     * @var array
+     */
     private $persons;
     
+    /**
+     * @var array 
+     */
     private $personClassMap = [
         'natural' => NaturalPerson::class,
         'legal' => LegalPerson::class
     ];
     
+    /**
+     * @var array 
+     */
     private $operationIndexMap = [];
     
+    /**
+     * Class constructor.
+     * 
+     * @param array $operations
+     */
     public function __construct($operations = [])
     {
         $this->setOperations($operations);
     }
-
+    
+    /**
+     * Get calculated commission fees.
+     * 
+     * @return array
+     */
     public function getFees()
     {
-        $fees = $this->calculateFees();
-        
-        return $fees;
+        return $this->calculateFees();
     }
     
-    public function printResult($fees)
+    /**
+     * Outputs result to sdout.
+     * 
+     * @param array $fees
+     */
+    public function outputResult($fees)
     {
         foreach ($fees as $fee) {
             echo $fee. PHP_EOL;
         }
     }
        
+    /**
+     * Calculate commission fees. 
+     * 
+     * @return array
+     */
     private function calculateFees()
     {
         $fees = [];
@@ -55,29 +89,53 @@ class Calculator
         return $fees;
     }
     
+    /**
+     * Get person by ID.
+     * 
+     * @param int $id
+     * @return \App\Entities\Person
+     */
     private function getPerson($id)
     {
         return $this->persons[$id] ?? null;
     }
     
+    /**
+     * Add person.
+     * 
+     * @param \App\Entities\Person $person
+     */
     private function addPerson($person)
     {
         $this->persons[$person->getId()] = $person;
     }
     
+    /**
+     * Create new person entity.
+     * 
+     * @param string $type
+     * @param int $id
+     * @return \App\Entities\Person
+     * @throws \Exception
+     */
     private function createPerson($type, $id)
     {
         if (isset($this->personClassMap[$type])) {
             if (class_exists($this->personClassMap[$type])) {
                 return new $this->personClassMap[$type]($id);
-            } else {
-                throw new \Exception('Unknown person class in class mapping.');
-            }
-        } else {
-            throw new \Exception('Unknown person type in class mapping.');
-        }
+            }              
+            throw new \Exception('Unknown person class in class mapping.');
+        } 
+        
+        throw new \Exception('Unknown person type in class mapping.');
+        
     }
     
+    /**
+     * Set operations to be calculated.
+     * 
+     * @param array $operations
+     */
     public function setOperations($operations)
     {
         $this->operations = $operations;

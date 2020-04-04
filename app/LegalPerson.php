@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Entities;
 
-use App\Person;
+use App\Currency;
 
 /**
- * Description of LegalPerson
+ * Entity for LegalPerson
  *
  * @author Doncho Toromanov
  */
@@ -15,6 +15,9 @@ class LegalPerson extends Person
     const CASH_OUT_FEE_MIN = 0.5;
     const CASH_OUT_FEE_MIN_CURRENCY = 'EUR';
     
+    /**
+     * {@inheritdoc}
+     */
     protected function calculateCashOutFee(Operation $operation)
     {
         $feeMultiplier = $this->calculator->divide(self::CASH_OUT_FEE, 100);

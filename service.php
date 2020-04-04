@@ -16,7 +16,7 @@ try {
 
     $fees = $calculator->getFees();
 
-    $calculator->printResult($fees);
+    $calculator->outputResult($fees);
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;
 }

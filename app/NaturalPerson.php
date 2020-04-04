@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Entities;
 
-use App\Person;
-
+use App\Currency;
+use App\Entities\Operation;
 /**
- * Description of NaturalPerson
+ * Entity for NaturalPerson
  *
  * @author Doncho Toromanov
  */
@@ -14,18 +14,29 @@ class NaturalPerson extends Person
     const CASH_OUT_FEE = 0.3;
     const FREE_CASH_OUT_WEEKLY_COUNT_LIMIT = 3;
     const FREE_CASH_OUT_WEEKLY_AMOUNT_LIMIT = 1000;
- 
+    
+    /**
+     * @var array
+     */
     private $cashOutWeekData;
    
-    protected function addOperation($operation)
+    /**
+     * Add operation.
+     * 
+     * @param \App\Entities\Operation $operation
+     */
+    protected function addOperation(Operation $operation)
     {
         parent::addOperation($operation);
         
         if ($operation->getType() == Operation::CASH_OUT) {
-            $this->setCashOutWeekData($operation);
+            $this->addCashOutWeekData($operation);
         }
     }
     
+    /**
+     * {@inheritdoc}
+     */
     protected function calculateCashOutFee(Operation $operation)
     {
         if ($this->getCashOutCountForWeek($operation->getWeekNumber()) > self::FREE_CASH_OUT_WEEKLY_COUNT_LIMIT) {
@@ -34,7 +45,7 @@ class NaturalPerson extends Person
         
         $amountForWeek = $this->getCashOutAmountForWeek($operation->getWeekNumber());
         if ($this->calculator->compare($amountForWeek, self::FREE_CASH_OUT_WEEKLY_AMOUNT_LIMIT) == -1) {
-            return 0;
+            return '0';
         }
         
         $amountForWeek = Currency::convert($amountForWeek, Currency::DEFAULT_CURRENCY, $operation->getCurrency());
@@ -42,7 +53,7 @@ class NaturalPerson extends Person
         $amountForWeekPrev = $this->calculator->subtract($amountForWeek, $operation->getAmount());
         if ($this->calculator->compare($amountForWeekPrev, $freeOfChargeLimit) == 1) {
             $feeMultiplier = $this->calculator->divide(self::CASH_OUT_FEE, 100);
-            
+
             return $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
         } else {
             $feeMultiplier = $this->calculator->divide(self::CASH_OUT_FEE, 100);
@@ -52,12 +63,17 @@ class NaturalPerson extends Person
         }
     }
     
-    private function setCashOutWeekData($operation)
+    /**
+     * Add operation information to weekly cash out data.
+     *
+     * @param \App\Operation $operation
+     */
+    private function addCashOutWeekData(Operation $operation)
     {
         $weekNumber = $operation->getWeekNumber();
         if (isset($this->cashOutWeekData[$weekNumber])) {
             $amount = Currency::convert($operation->getAmount(), $operation->getCurrency());
-            
+
             $this->cashOutWeekData[$weekNumber]['count']++;
             $this->cashOutWeekData[$weekNumber]['amount'] = $this->calculator->add($this->cashOutWeekData[$weekNumber]['amount'], $amount);
         } else {
@@ -67,8 +83,10 @@ class NaturalPerson extends Person
     }
     
     /**
+     * Get cash out count for selected week.
      *
      * @param string $weekId
+     *
      * @return int
      */
     public function getCashOutCountForWeek($weekId)
@@ -80,13 +98,19 @@ class NaturalPerson extends Person
         return 0;
     }
     
-    
+    /**
+     * Get cash out amount for selected week.
+     *
+     * @param string $weekId
+     *
+     * @return string
+     */
     public function getCashOutAmountForWeek($weekId)
     {
         if (isset($this->cashOutWeekData[$weekId]['amount'])) {
             return $this->cashOutWeekData[$weekId]['amount'];
         }
         
-        return 0;
+        return '0';
     }
 }
