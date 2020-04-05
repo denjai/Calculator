@@ -159,13 +159,13 @@ class MoneyCalculator
         $precision = $this->configurationProvider->getDefaultPrecision($currency);
    
         if ($precision == 0) {
-            return ceil($amount);
+            return number_format(ceil($amount), $precision, '.', '');
         }
         
         $precisionMultiplier = pow(10, $precision);
         $amount = ceil($this->multiply($amount, $precisionMultiplier));
 
-        return number_format($this->divide($amount, $precisionMultiplier), $precision);
+        return number_format($this->divide($amount, $precisionMultiplier), $precision, '.', '');
     }
     
     /**

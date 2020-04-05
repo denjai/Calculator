@@ -15,7 +15,7 @@ class LegalPerson extends Person
     protected function calculateCashOutFee(Operation $operation)
     {
         $cashOutFeePercentage = $this->configurationProvider->getCashOutFeePercentage();
-        $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, 100);
+        $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, '100');
         $fee = $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
         
         list($minCashOutFee, $minCashOutFeeCurrency) = $this->configurationProvider->getMinCashOutFee();

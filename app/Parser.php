@@ -25,7 +25,7 @@ class Parser
     public function loadCsvFile($path, $delimiter = ',', $enclosure = '')
     {
         if (!file_exists($path)) {
-            throw new \Exception('File not found: ' . $path);
+            throw new \InvalidArgumentException('File path not found: ' . $path);
         }
         
         $this->data = array_map('str_getcsv', file($path), [$delimiter, $enclosure]);

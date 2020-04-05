@@ -102,7 +102,7 @@ class Person
     protected function calculateCashInFee(Operation $operation)
     {
         $cashInFeePercentage = $this->configurationProvider->getCashInFeePercentage();
-        $feeMultiplier = $this->calculator->divide($cashInFeePercentage, 100);
+        $feeMultiplier = $this->calculator->divide($cashInFeePercentage, '100');
         $fee = $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
         
         list($maxCashInFee, $maxCashInFeeCurrency) = $this->configurationProvider->getMaxCashInFee();
@@ -120,7 +120,7 @@ class Person
     protected function calculateCashOutFee(Operation $operation)
     {
         $cashOutFeePercentage = $this->configurationProvider->getCashOutFeePercentage();
-        $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, 100);
+        $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, '100');
         $fee = $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
       
         return $fee;

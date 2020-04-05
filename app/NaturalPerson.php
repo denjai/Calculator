@@ -59,7 +59,7 @@ class NaturalPerson extends Person
         } else {
             //calculate commission fee on part of operation amount that is over the free weekly amount limit
             $cashOutFeePercentage = $this->configurationProvider->getCashOutFeePercentage();
-            $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, 100);
+            $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, '100');
             $amount = $this->calculator->subtract($amountForWeek, $freeOfChargeLimit);
             
             return $this->calculator->multiply($amount, $feeMultiplier);
