@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Validation\InputValidator;
+
 /**
  * Commission fee calculator.
  *
@@ -28,17 +30,19 @@ class Calculator
     ];
     
     /**
-     * @var array
+     * @var \App\Validation\InputValidator
      */
-    private $operationIndexMap = [];
+    private $validator;
     
     /**
      * Class constructor.
      *
      * @param array $operations
      */
-    public function __construct($operations = [])
+    public function __construct($operations = [], $validator = null)
     {
+        $this->validator = $validator !== null ? $validator : new InputValidator();
+        
         $this->setOperations($operations);
     }
     
@@ -133,6 +137,8 @@ class Calculator
      */
     public function setOperations($operations)
     {
+        $this->validator->validateOperations($operations);
+        
         $this->operations = $operations;
     }
 }
