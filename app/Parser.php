@@ -10,13 +10,13 @@ namespace App;
 class Parser
 {
     /**
-     * @var array 
+     * @var array
      */
     private $data;
     
     /**
      * Load csv file into an array.
-     * 
+     *
      * @param string $path
      * @param string $delimiter
      * @param string $enclosure
@@ -33,7 +33,7 @@ class Parser
     
     /**
      * Get parsed data.
-     * 
+     *
      * @return array
      */
     public function getData()

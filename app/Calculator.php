@@ -2,10 +2,6 @@
 
 namespace App;
 
-use App\Entities\Operation;
-use App\Entities\LegalPerson;
-use App\Entities\NaturalPerson;
-
 /**
  * Commission fee calculator.
  *
@@ -14,7 +10,7 @@ use App\Entities\NaturalPerson;
 class Calculator
 {
     /**
-     * @var array 
+     * @var array
      */
     private $operations;
     
@@ -24,7 +20,7 @@ class Calculator
     private $persons;
     
     /**
-     * @var array 
+     * @var array
      */
     private $personClassMap = [
         'natural' => NaturalPerson::class,
@@ -32,13 +28,13 @@ class Calculator
     ];
     
     /**
-     * @var array 
+     * @var array
      */
     private $operationIndexMap = [];
     
     /**
      * Class constructor.
-     * 
+     *
      * @param array $operations
      */
     public function __construct($operations = [])
@@ -48,7 +44,7 @@ class Calculator
     
     /**
      * Get calculated commission fees.
-     * 
+     *
      * @return array
      */
     public function getFees()
@@ -58,7 +54,7 @@ class Calculator
     
     /**
      * Outputs result to sdout.
-     * 
+     *
      * @param array $fees
      */
     public function outputResult($fees)
@@ -69,8 +65,8 @@ class Calculator
     }
        
     /**
-     * Calculate commission fees. 
-     * 
+     * Calculate commission fees.
+     *
      * @return array
      */
     private function calculateFees()
@@ -91,9 +87,9 @@ class Calculator
     
     /**
      * Get person by ID.
-     * 
+     *
      * @param int $id
-     * @return \App\Entities\Person
+     * @return \App\Person
      */
     private function getPerson($id)
     {
@@ -102,8 +98,8 @@ class Calculator
     
     /**
      * Add person.
-     * 
-     * @param \App\Entities\Person $person
+     *
+     * @param \App\Person $person
      */
     private function addPerson($person)
     {
@@ -112,10 +108,10 @@ class Calculator
     
     /**
      * Create new person entity.
-     * 
+     *
      * @param string $type
      * @param int $id
-     * @return \App\Entities\Person
+     * @return \App\Person
      * @throws \Exception
      */
     private function createPerson($type, $id)
@@ -123,17 +119,16 @@ class Calculator
         if (isset($this->personClassMap[$type])) {
             if (class_exists($this->personClassMap[$type])) {
                 return new $this->personClassMap[$type]($id);
-            }              
+            }
             throw new \Exception('Unknown person class in class mapping.');
-        } 
+        }
         
         throw new \Exception('Unknown person type in class mapping.');
-        
     }
     
     /**
      * Set operations to be calculated.
-     * 
+     *
      * @param array $operations
      */
     public function setOperations($operations)

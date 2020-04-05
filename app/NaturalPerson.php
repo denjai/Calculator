@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Entities;
+namespace App;
 
-use App\Currency;
-use App\Entities\Operation;
 /**
  * Entity for NaturalPerson
  *
@@ -11,10 +9,6 @@ use App\Entities\Operation;
  */
 class NaturalPerson extends Person
 {
-    const CASH_OUT_FEE = 0.3;
-    const FREE_CASH_OUT_WEEKLY_COUNT_LIMIT = 3;
-    const FREE_CASH_OUT_WEEKLY_AMOUNT_LIMIT = 1000;
-    
     /**
      * @var array
      */
@@ -22,8 +16,8 @@ class NaturalPerson extends Person
    
     /**
      * Add operation.
-     * 
-     * @param \App\Entities\Operation $operation
+     *
+     * @param \App\Operation $operation
      */
     protected function addOperation(Operation $operation)
     {
@@ -39,24 +33,33 @@ class NaturalPerson extends Person
      */
     protected function calculateCashOutFee(Operation $operation)
     {
-        if ($this->getCashOutCountForWeek($operation->getWeekNumber()) > self::FREE_CASH_OUT_WEEKLY_COUNT_LIMIT) {
-            return parent::calculateCashOutFee($operation); //default
+        //check free weekly cash out count limit
+        if ($this->getCashOutCountForWeek($operation->getWeekNumber())
+                > $this->configurationProvider->getWeeklyCashOutCountLimit()) {
+            //operation count is above free weekly acount limit
+            return parent::calculateCashOutFee($operation); //use default rates
         }
         
         $amountForWeek = $this->getCashOutAmountForWeek($operation->getWeekNumber());
-        if ($this->calculator->compare($amountForWeek, self::FREE_CASH_OUT_WEEKLY_AMOUNT_LIMIT) == -1) {
+        list($weeklyLimit, $weeklyLimitCurrency) = $this->configurationProvider->getWeeklyCashOutAmountLimit();
+        $weeklyLimitConverted = $this->calculator->convert($weeklyLimit, $weeklyLimitCurrency);
+        if ($this->calculator->compare($amountForWeek, $weeklyLimitConverted) == -1) {
+            //operation money amount is below free weekly amount limit
             return '0';
         }
         
-        $amountForWeek = Currency::convert($amountForWeek, Currency::DEFAULT_CURRENCY, $operation->getCurrency());
-        $freeOfChargeLimit = Currency::convert(self::FREE_CASH_OUT_WEEKLY_AMOUNT_LIMIT, Currency::DEFAULT_CURRENCY, $operation->getCurrency());
+        $defaultCurrency = $this->calculator->getDefaultCurrency();
+        $amountForWeek = $this->calculator->convert($amountForWeek, $defaultCurrency, $operation->getCurrency());
+        $freeOfChargeLimit = $this->calculator->convert($weeklyLimit, $weeklyLimitCurrency, $operation->getCurrency());
         $amountForWeekPrev = $this->calculator->subtract($amountForWeek, $operation->getAmount());
+        
         if ($this->calculator->compare($amountForWeekPrev, $freeOfChargeLimit) == 1) {
-            $feeMultiplier = $this->calculator->divide(self::CASH_OUT_FEE, 100);
-
-            return $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
+            //calculate commission fee on the whole operation amount
+            return parent::calculateCashOutFee($operation);
         } else {
-            $feeMultiplier = $this->calculator->divide(self::CASH_OUT_FEE, 100);
+            //calculate commission fee on part of operation amount that is over the free weekly amount limit
+            $cashOutFeePercentage = $this->configurationProvider->getCashOutFeePercentage();
+            $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, 100);
             $amount = $this->calculator->subtract($amountForWeek, $freeOfChargeLimit);
             
             return $this->calculator->multiply($amount, $feeMultiplier);
@@ -72,13 +75,13 @@ class NaturalPerson extends Person
     {
         $weekNumber = $operation->getWeekNumber();
         if (isset($this->cashOutWeekData[$weekNumber])) {
-            $amount = Currency::convert($operation->getAmount(), $operation->getCurrency());
+            $amount = $this->calculator->convert($operation->getAmount(), $operation->getCurrency());
 
             $this->cashOutWeekData[$weekNumber]['count']++;
             $this->cashOutWeekData[$weekNumber]['amount'] = $this->calculator->add($this->cashOutWeekData[$weekNumber]['amount'], $amount);
         } else {
             $this->cashOutWeekData[$weekNumber]['count'] = 1;
-            $this->cashOutWeekData[$weekNumber]['amount'] = Currency::convert($operation->getAmount(), $operation->getCurrency());
+            $this->cashOutWeekData[$weekNumber]['amount'] = $this->calculator->convert($operation->getAmount(), $operation->getCurrency());
         }
     }
     

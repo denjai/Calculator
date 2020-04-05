@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entities;
+namespace App;
 
 /**
  * Entity for Operation.
@@ -90,7 +90,7 @@ class Operation
     
     /**
      * Get amount.
-     * 
+     *
      * @return string
      */
     public function getAmount()
@@ -100,7 +100,7 @@ class Operation
     
     /**
      * Set amount.
-     * 
+     *
      * @param string $amount
      */
     public function setAmount($amount)
@@ -110,7 +110,7 @@ class Operation
     
     /**
      * Get currency.
-     * 
+     *
      * @return string
      */
     public function getCurrency()
@@ -120,7 +120,7 @@ class Operation
     
     /**
      * Set currency.
-     * 
+     *
      * @param string $currency
      */
     public function setCurrency($currency)
@@ -131,7 +131,7 @@ class Operation
     /**
      * Get week number. The week number is concatenation of the year and
      * week number of year, weeks starting on Monday.
-     *  
+     *
      * @return string
      */
     public function getWeekNumber()

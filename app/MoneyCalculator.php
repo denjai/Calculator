@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Configuration\MoneyConfigurationProvider;
+use App\Configuration\MoneyConfigurationProviderInterface;
+
 /**
  * Money calculator based on BC Math extension.
  *
@@ -15,11 +18,20 @@ class MoneyCalculator
     private $scale;
 
     /**
+     * @var \App\Configuration\MoneyConfigurationProviderInterface
+     */
+    private $configurationProvider;
+
+    /**
      * @param int $scale
      */
-    public function __construct($scale = 14)
+    public function __construct($scale = 14, $configurationProvider = null)
     {
         $this->scale = $scale;
+        
+        $this->configurationProvider = $configurationProvider !== null
+                ? $configurationProvider
+                : new MoneyConfigurationProvider();
     }
     
     /**
@@ -102,5 +114,77 @@ class MoneyCalculator
     public function getScale()
     {
         return $this->scale;
+    }
+    
+    /**
+     * Convert money amount from one currency to another.
+     *
+     * @param string $amount
+     * @param string $currFrom
+     * @param string $currTo
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function convert($amount, $currFrom, $currTo = null)
+    {
+        $currTo = $currTo ?? $this->configurationProvider->getDefaultCurrency();
+        
+        if ($currFrom == $currTo) {
+            return $amount;
+        }
+        
+        $rate = $this->configurationProvider->getConversionRate($currFrom, $currTo);
+        if ($rate !== false) {
+            return $this->multiply($amount, $rate);
+        }
+        
+        $rate = $this->configurationProvider->getConversionRate($currTo, $currFrom);
+        if ($rate !== false) {
+            return $this->divide($amount, $rate);
+        }
+        
+        throw new \Exception('Currency convertion rate not found: ' . $key);
+    }
+    
+    /**
+     * Round money amount to the precision of the selected currency.
+     *
+     * @param string $amount
+     * @param string $currency
+     * @return string
+     */
+    public function round($amount, $currency)
+    {
+        $precision = $this->configurationProvider->getDefaultPrecision($currency);
+   
+        if ($precision == 0) {
+            return ceil($amount);
+        }
+        
+        $precisionMultiplier = pow(10, $precision);
+        $amount = ceil($this->multiply($amount, $precisionMultiplier));
+
+        return number_format($this->divide($amount, $precisionMultiplier), $precision);
+    }
+    
+    /**
+     * Set money configuration provider.
+     *
+     * @param MoneyConfigurationProviderInterface $provider
+     */
+    public function setConfigurationProvider(MoneyConfigurationProviderInterface $provider)
+    {
+        $this->configurationProvider = $provider;
+    }
+    
+    /**
+     * Get default currency.
+     *
+     * @return string
+     */
+    public function getDefaultCurrency()
+    {
+        return $this->configurationProvider->getDefaultCurrency();
     }
 }

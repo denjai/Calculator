@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Entities;
-
-use App\Currency;
+namespace App;
 
 /**
  * Entity for LegalPerson
@@ -11,18 +9,17 @@ use App\Currency;
  */
 class LegalPerson extends Person
 {
-    const CASH_OUT_FEE = 0.3;
-    const CASH_OUT_FEE_MIN = 0.5;
-    const CASH_OUT_FEE_MIN_CURRENCY = 'EUR';
-    
     /**
      * {@inheritdoc}
      */
     protected function calculateCashOutFee(Operation $operation)
     {
-        $feeMultiplier = $this->calculator->divide(self::CASH_OUT_FEE, 100);
+        $cashOutFeePercentage = $this->configurationProvider->getCashOutFeePercentage();
+        $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, 100);
         $fee = $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
-        $minFee = Currency::convert(self::CASH_OUT_FEE_MIN, self::CASH_OUT_FEE_MIN_CURRENCY, $operation->getCurrency());
+        
+        list($minCashOutFee, $minCashOutFeeCurrency) = $this->configurationProvider->getMinCashOutFee();
+        $minFee = $this->calculator->convert($minCashOutFee, $minCashOutFeeCurrency, $operation->getCurrency());
         
         return max($fee, $minFee);
     }
