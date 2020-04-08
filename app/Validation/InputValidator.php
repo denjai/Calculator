@@ -7,7 +7,7 @@ namespace App\Validation;
  *
  * @author Doncho Toromanov
  */
-class InputValidator 
+class InputValidator
 {
     const DEFAULT_DATE_FORMAT = 'Y-m-d';
     
@@ -15,7 +15,8 @@ class InputValidator
     
     protected static $validPersonTypes = ['legal', 'natural'];
     
-    public function validateOperations($operations) {
+    public function validateOperations($operations)
+    {
         foreach ($operations as $operation) {
             $this->validateOperation($operation);
         }
@@ -23,8 +24,7 @@ class InputValidator
 
     public function validateOperation($dataRow)
     {
-        foreach ($dataRow as $key => $field)
-        {
+        foreach ($dataRow as $key => $field) {
             switch (self::$inputTypes[$key]) {
                 case 'date':
                     $this->validateDate($field);
@@ -51,21 +51,21 @@ class InputValidator
     {
         $d = \DateTime::createFromFormat($format, $date);
 
-        if(!$d || $d->format($format) !== $date){
+        if (!$d || $d->format($format) !== $date) {
             throw new \InvalidArgumentException('Invalid date:' . $date);
         }
     }
     
     public function validateInteger($value)
     {
-        if(!filter_var($value, FILTER_VALIDATE_INT)){
+        if (!filter_var($value, FILTER_VALIDATE_INT)) {
             throw new \InvalidArgumentException('Invalid Integer:' . $value);
         }
     }
     
     public function validatePersonType($type)
     {
-        if(!in_array($type, self::$validPersonTypes)){
+        if (!in_array($type, self::$validPersonTypes)) {
             throw new \InvalidArgumentException('Invalid person type:' . $type);
         }
     }
@@ -73,7 +73,7 @@ class InputValidator
     public function validateCurrency($currency)
     {
         $configProvider = new \App\Configuration\MoneyConfigurationProvider();
-        if(!in_array($currency, $configProvider->getSupportedCurrencies())){
+        if (!in_array($currency, $configProvider->getSupportedCurrencies())) {
             throw new \InvalidArgumentException('Invalid or not supported currency:' . $currency);
         }
     }
@@ -82,7 +82,7 @@ class InputValidator
     {
         $p = '/^([0-9]*\.?[0-9]*)$/';
 
-        if(preg_match($p, $amount) !== 1){
+        if (preg_match($p, $amount) !== 1) {
             throw new \InvalidArgumentException('Invalid money amount format:' . $amount);
         }
     }

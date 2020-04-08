@@ -130,7 +130,7 @@ class MoneyCalculator
     {
         $currTo = $currTo ?? $this->configurationProvider->getDefaultCurrency();
         
-        if ($currFrom == $currTo) {
+        if ($currFrom === $currTo) {
             return $amount;
         }
         
@@ -158,7 +158,7 @@ class MoneyCalculator
     {
         $precision = $this->configurationProvider->getDefaultPrecision($currency);
    
-        if ($precision == 0) {
+        if ($precision === 0) {
             return number_format(ceil($amount), $precision, '.', '');
         }
         

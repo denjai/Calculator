@@ -67,7 +67,7 @@ class MoneyConfigurationProvider implements MoneyConfigurationProviderInterface
 
     /**
      * Get default precision for selected currency.
-     * 
+     *
      * @param string $currency
      * @return int
      */

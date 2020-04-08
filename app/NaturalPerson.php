@@ -23,7 +23,7 @@ class NaturalPerson extends Person
     {
         parent::addOperation($operation);
         
-        if ($operation->getType() == Operation::CASH_OUT) {
+        if ($operation->getType() === Operation::CASH_OUT) {
             $this->addCashOutWeekData($operation);
         }
     }
@@ -43,7 +43,7 @@ class NaturalPerson extends Person
         $amountForWeek = $this->getCashOutAmountForWeek($operation->getWeekNumber());
         list($weeklyLimit, $weeklyLimitCurrency) = $this->configurationProvider->getWeeklyCashOutAmountLimit();
         $weeklyLimitConverted = $this->calculator->convert($weeklyLimit, $weeklyLimitCurrency);
-        if ($this->calculator->compare($amountForWeek, $weeklyLimitConverted) == -1) {
+        if ($this->calculator->compare($amountForWeek, $weeklyLimitConverted) === -1) {
             //operation money amount is below free weekly amount limit
             return '0';
         }
@@ -53,7 +53,7 @@ class NaturalPerson extends Person
         $freeOfChargeLimit = $this->calculator->convert($weeklyLimit, $weeklyLimitCurrency, $operation->getCurrency());
         $amountForWeekPrev = $this->calculator->subtract($amountForWeek, $operation->getAmount());
         
-        if ($this->calculator->compare($amountForWeekPrev, $freeOfChargeLimit) == 1) {
+        if ($this->calculator->compare($amountForWeekPrev, $freeOfChargeLimit) === 1) {
             //calculate commission fee on the whole operation amount
             return parent::calculateCashOutFee($operation);
         } else {

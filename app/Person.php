@@ -71,11 +71,11 @@ class Person
     {
         $this->addOperation($operation);
 
-        if ($operation->getType() == Operation::CASH_IN) {
+        if ($operation->getType() === Operation::CASH_IN) {
             $fee = $this->calculateCashInFee($operation);
             return $this->calculator->round($fee, $operation->getCurrency());
         }
-        if ($operation->getType() == Operation::CASH_OUT) {
+        if ($operation->getType() === Operation::CASH_OUT) {
             $fee = $this->calculateCashOutFee($operation);
             return $this->calculator->round($fee, $operation->getCurrency());
         }
