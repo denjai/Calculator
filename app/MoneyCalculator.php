@@ -144,7 +144,7 @@ class MoneyCalculator
             return $this->divide($amount, $rate);
         }
         
-        throw new \Exception('Currency convertion rate not found: ' . $key);
+        throw new \Exception('Currency convertion rate not found: ' . $rate);
     }
     
     /**
