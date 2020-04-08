@@ -66,9 +66,10 @@ class MoneyConfigurationProvider implements MoneyConfigurationProviderInterface
     }
 
     /**
-     *
-     * @param type $currency
-     * @return type
+     * Get default precision for selected currency.
+     * 
+     * @param string $currency
+     * @return int
      */
     public function getDefaultPrecision($currency)
     {
