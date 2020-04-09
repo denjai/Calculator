@@ -39,9 +39,9 @@ class Calculator
      *
      * @param array $operations
      */
-    public function __construct($operations = [], $validator = null)
+    public function __construct($operations , $validator)
     {
-        $this->validator = $validator !== null ? $validator : new InputValidator();
+        $this->validator = $validator;
         
         $this->setOperations($operations);
     }
@@ -122,7 +122,11 @@ class Calculator
     {
         if (isset($this->personClassMap[$type])) {
             if (class_exists($this->personClassMap[$type])) {
-                return new $this->personClassMap[$type]($id);
+                $mConfigurationProvider = new Configuration\MoneyConfigurationProvider(); 
+                $calculator = new MoneyCalculator($mConfigurationProvider);
+                $configurationProvider = new Configuration\FeeConfigurationProvider();
+
+                return new $this->personClassMap[$type]($id, $configurationProvider, $calculator);
             }
             throw new \Exception('Unknown person class in class mapping.');
         }

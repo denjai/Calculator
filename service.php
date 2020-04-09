@@ -11,8 +11,10 @@ try {
     $filePath = $argv[1];
     $parser = new \App\Parser();
     $parser->loadCsvFile($filePath);
-        
-    $calculator = new \App\Calculator($parser->getData());
+    
+    $mConfigurationProvider = new \App\Configuration\MoneyConfigurationProvider();
+    $validator = new \App\Validation\InputValidator($mConfigurationProvider->getSupportedCurrencies());
+    $calculator = new \App\Calculator($parser->getData(), $validator);
 
     $fees = $calculator->getFees();
 

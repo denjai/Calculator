@@ -15,13 +15,33 @@ class InputValidator
     
     protected static $validPersonTypes = ['legal', 'natural'];
     
+    private $supportedCurrencies;
+    
+    /**
+     * Class constructor.
+     * 
+     * @param array $supportedCurrencies
+     */
+    public function __construct(array $supportedCurrencies) 
+    {
+        $this->supportedCurrencies = $supportedCurrencies;
+    }
+    
+    /**
+     * 
+     * @param array $operations
+     */
     public function validateOperations($operations)
     {
         foreach ($operations as $operation) {
             $this->validateOperation($operation);
         }
     }
-
+    
+    /**
+     * 
+     * @param array $dataRow
+     */
     public function validateOperation($dataRow)
     {
         foreach ($dataRow as $key => $field) {
@@ -47,6 +67,12 @@ class InputValidator
         }
     }
     
+    /**
+     * 
+     * @param string $date
+     * @param string $format
+     * @throws \InvalidArgumentException
+     */
     public function validateDate($date, $format = self::DEFAULT_DATE_FORMAT)
     {
         $d = \DateTime::createFromFormat($format, $date);
@@ -56,6 +82,11 @@ class InputValidator
         }
     }
     
+    /**
+     * 
+     * @param int $value
+     * @throws \InvalidArgumentException
+     */
     public function validateInteger($value)
     {
         if (!filter_var($value, FILTER_VALIDATE_INT)) {
@@ -63,6 +94,11 @@ class InputValidator
         }
     }
     
+    /**
+     * 
+     * @param string $type
+     * @throws \InvalidArgumentException
+     */
     public function validatePersonType($type)
     {
         if (!in_array($type, self::$validPersonTypes)) {
@@ -70,14 +106,23 @@ class InputValidator
         }
     }
     
+    /**
+     * 
+     * @param string $currency
+     * @throws \InvalidArgumentException
+     */
     public function validateCurrency($currency)
     {
-        $configProvider = new \App\Configuration\MoneyConfigurationProvider();
-        if (!in_array($currency, $configProvider->getSupportedCurrencies())) {
+        if (!in_array($currency, $this->supportedCurrencies)) {
             throw new \InvalidArgumentException('Invalid or not supported currency:' . $currency);
         }
     }
     
+    /**
+     * 
+     * @param string $amount
+     * @throws \InvalidArgumentException
+     */
     public function validateMoneyAmount($amount)
     {
         $p = '/^([0-9]*\.?[0-9]*)$/';

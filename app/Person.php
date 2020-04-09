@@ -39,15 +39,14 @@ class Person
      * Class constructor.
      *
      * @param int $id
+     * @param \App\Configuration\FeeConfigurationProviderInterface $configurationProvider
+     * @param \App\MoneyCalculator $calculator
      */
-    public function __construct($id, $configurationProvider = null)
+    public function __construct($id, $configurationProvider, $calculator)
     {
         $this->id = $id;
-        $this->calculator = new MoneyCalculator();
-        
-        $this->configurationProvider = $configurationProvider !== null
-                ? $configurationProvider
-                : new FeeConfigurationProvider();
+        $this->calculator = $calculator;
+        $this->configurationProvider = $configurationProvider;
     }
     
     /**
@@ -124,15 +123,5 @@ class Person
         $fee = $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
       
         return $fee;
-    }
-    
-    /**
-     * Set commission fee configuration provider.
-     *
-     * @param FeeConfigurationProviderInterface $provider
-     */
-    public function setConfigurationProvider(FeeConfigurationProviderInterface $provider)
-    {
-        $this->configurationProvider = $provider;
-    }
+    }  
 }

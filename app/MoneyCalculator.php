@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Configuration\MoneyConfigurationProvider;
 use App\Configuration\MoneyConfigurationProviderInterface;
 
 /**
@@ -23,15 +22,14 @@ class MoneyCalculator
     private $configurationProvider;
 
     /**
+     * @param MoneyConfigurationProviderInterface $configurationProvider
      * @param int $scale
      */
-    public function __construct($scale = 14, $configurationProvider = null)
+    public function __construct(MoneyConfigurationProviderInterface $configurationProvider, $scale = 14)
     {
         $this->scale = $scale;
         
-        $this->configurationProvider = $configurationProvider !== null
-                ? $configurationProvider
-                : new MoneyConfigurationProvider();
+        $this->configurationProvider = $configurationProvider;
     }
     
     /**
@@ -166,16 +164,6 @@ class MoneyCalculator
         $amount = ceil($this->multiply($amount, $precisionMultiplier));
 
         return number_format($this->divide($amount, $precisionMultiplier), $precision, '.', '');
-    }
-    
-    /**
-     * Set money configuration provider.
-     *
-     * @param MoneyConfigurationProviderInterface $provider
-     */
-    public function setConfigurationProvider(MoneyConfigurationProviderInterface $provider)
-    {
-        $this->configurationProvider = $provider;
     }
     
     /**
