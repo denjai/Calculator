@@ -68,18 +68,6 @@ class Calculator
     {
         return $this->calculateFees();
     }
-    
-    /**
-     * Outputs result to sdout.
-     *
-     * @param array $fees
-     */
-    public function outputResult($fees)
-    {
-        foreach ($fees as $fee) {
-            echo $fee. PHP_EOL;
-        }
-    }
        
     /**
      * Calculate commission fees.
@@ -109,7 +97,7 @@ class Calculator
      *
      * @param \App\Entity\Operation $operation
      * @param \App\Person $person
-     * 
+     *
      * @return array
      * @throws \Exception
      */
@@ -150,7 +138,7 @@ class Calculator
      *
      * @param \App\Operation $operation
      * @param \App\Person $person
-     * 
+     *
      * @return string
      */
     private function calculateCashOutFee(Operation $operation, Person $person)

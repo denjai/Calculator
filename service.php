@@ -20,7 +20,8 @@ try {
 
     $fees = $calculator->getFees();
 
-    $calculator->outputResult($fees);
+    $writer = new \App\IO\OutputWriter();
+    $writer->writeToStandartOutput($fee);
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;
 }
