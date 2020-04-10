@@ -19,7 +19,7 @@ class NaturalPerson extends Person
      *
      * @param \App\Operation $operation
      */
-    protected function addOperation(Operation $operation)
+    public function addOperation(Operation $operation)
     {
         parent::addOperation($operation);
         
@@ -27,45 +27,7 @@ class NaturalPerson extends Person
             $this->addCashOutWeekData($operation);
         }
     }
-    
-    /**
-     * {@inheritdoc}
-     */
-    protected function calculateCashOutFee(Operation $operation)
-    {
-        //check free weekly cash out count limit
-        if ($this->getCashOutCountForWeek($operation->getWeekNumber())
-                > $this->configurationProvider->getWeeklyCashOutCountLimit()) {
-            //operation count is above free weekly acount limit
-            return parent::calculateCashOutFee($operation); //use default rates
-        }
-        
-        $amountForWeek = $this->getCashOutAmountForWeek($operation->getWeekNumber());
-        list($weeklyLimit, $weeklyLimitCurrency) = $this->configurationProvider->getWeeklyCashOutAmountLimit();
-        $weeklyLimitConverted = $this->calculator->convert($weeklyLimit, $weeklyLimitCurrency);
-        if ($this->calculator->compare($amountForWeek, $weeklyLimitConverted) === -1) {
-            //operation money amount is below free weekly amount limit
-            return '0';
-        }
-        
-        $defaultCurrency = $this->calculator->getDefaultCurrency();
-        $amountForWeek = $this->calculator->convert($amountForWeek, $defaultCurrency, $operation->getCurrency());
-        $freeOfChargeLimit = $this->calculator->convert($weeklyLimit, $weeklyLimitCurrency, $operation->getCurrency());
-        $amountForWeekPrev = $this->calculator->subtract($amountForWeek, $operation->getAmount());
-        
-        if ($this->calculator->compare($amountForWeekPrev, $freeOfChargeLimit) === 1) {
-            //calculate commission fee on the whole operation amount
-            return parent::calculateCashOutFee($operation);
-        } else {
-            //calculate commission fee on part of operation amount that is over the free weekly amount limit
-            $cashOutFeePercentage = $this->configurationProvider->getCashOutFeePercentage();
-            $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, '100');
-            $amount = $this->calculator->subtract($amountForWeek, $freeOfChargeLimit);
-            
-            return $this->calculator->multiply($amount, $feeMultiplier);
-        }
-    }
-    
+ 
     /**
      * Add operation information to weekly cash out data.
      *

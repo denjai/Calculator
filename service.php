@@ -14,7 +14,9 @@ try {
     
     $mConfigurationProvider = new \App\Configuration\MoneyConfigurationProvider();
     $validator = new \App\Validation\InputValidator($mConfigurationProvider->getSupportedCurrencies());
-    $calculator = new \App\Calculator($parser->getData(), $validator);
+    $moneyCalculator = new \App\MoneyCalculator($mConfigurationProvider);
+    $configurationProvider = new \App\Configuration\FeeConfigurationProvider();
+    $calculator = new \App\Calculator($parser->getData(), $validator, $configurationProvider, $moneyCalculator);
 
     $fees = $calculator->getFees();
 

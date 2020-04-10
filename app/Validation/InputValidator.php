@@ -19,16 +19,16 @@ class InputValidator
     
     /**
      * Class constructor.
-     * 
+     *
      * @param array $supportedCurrencies
      */
-    public function __construct(array $supportedCurrencies) 
+    public function __construct(array $supportedCurrencies)
     {
         $this->supportedCurrencies = $supportedCurrencies;
     }
     
     /**
-     * 
+     *
      * @param array $operations
      */
     public function validateOperations($operations)
@@ -39,7 +39,7 @@ class InputValidator
     }
     
     /**
-     * 
+     *
      * @param array $dataRow
      */
     public function validateOperation($dataRow)
@@ -68,7 +68,7 @@ class InputValidator
     }
     
     /**
-     * 
+     *
      * @param string $date
      * @param string $format
      * @throws \InvalidArgumentException
@@ -83,7 +83,7 @@ class InputValidator
     }
     
     /**
-     * 
+     *
      * @param int $value
      * @throws \InvalidArgumentException
      */
@@ -95,7 +95,7 @@ class InputValidator
     }
     
     /**
-     * 
+     *
      * @param string $type
      * @throws \InvalidArgumentException
      */
@@ -107,7 +107,7 @@ class InputValidator
     }
     
     /**
-     * 
+     *
      * @param string $currency
      * @throws \InvalidArgumentException
      */
@@ -119,7 +119,7 @@ class InputValidator
     }
     
     /**
-     * 
+     *
      * @param string $amount
      * @throws \InvalidArgumentException
      */

@@ -4,6 +4,10 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use App\Calculator;
+use App\MoneyCalculator;
+use App\Configuration\MoneyConfigurationProvider;
+use App\Configuration\FeeConfigurationProvider;
+use App\Validation\InputValidator;
 
 /**
  * Tets for Calculator class.
@@ -20,8 +24,12 @@ class CalculatorTest extends TestCase
      * @dataProvider dataProviderCalculatFees
      */
     public function testCalculateFees($operations, $expectedResult)
-    {
-        $calculator = new Calculator($operations);
+    { 
+        $mConfigurationProvider = new MoneyConfigurationProvider();
+        $validator = new InputValidator($mConfigurationProvider->getSupportedCurrencies());
+        $moneyCalculator = new MoneyCalculator($mConfigurationProvider);
+        $configurationProvider = new FeeConfigurationProvider();
+        $calculator = new Calculator($operations, $validator, $configurationProvider, $moneyCalculator);
         $result = $calculator->getFees();
 
         $this->assertSame($expectedResult, $result);
