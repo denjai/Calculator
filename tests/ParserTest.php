@@ -26,9 +26,9 @@ class ParserTest extends TestCase
      */
     public function testLoadCsvFile($filePath, $expected)
     { 
-        $this->parser->loadCsvFile($filePath);
+        $parsedData = $this->parser->loadCsvFile($filePath);
         
-        $this->assertSame($expected, $this->parser->getData());
+        $this->assertSame($expected, $parsedData);
     }
     
     public function testCanNotLoadFromIvalidFilePath()

@@ -12,11 +12,6 @@ class Calculator
     /**
      * @var array
      */
-    private $operations;
-    
-    /**
-     * @var array
-     */
     private $persons;
     
     /**
@@ -45,39 +40,30 @@ class Calculator
     /**
      * Class constructor.
      *
-     * @param array $operations
      * @param \App\Validation\InputValidator $validator
      * @param \App\Configuration\FeeConfigurationProviderInterface $configurationProvider
      * @param \App\MoneyCalculator $calculator
      */
-    public function __construct($operations, $validator, $configurationProvider, $calculator)
+    public function __construct($validator, $configurationProvider, $calculator)
     {
         $this->validator = $validator;
         $this->configurationProvider = $configurationProvider;
         $this->calculator = $calculator;
+    }
         
-        $this->setOperations($operations);
-    }
-    
     /**
-     * Get calculated commission fees.
+     * Calculates and returns commission fees for given set of opearations.
      *
+     * @param array $operations
+     * 
      * @return array
      */
-    public function getFees()
+    public function calculateFees($operations)
     {
-        return $this->calculateFees();
-    }
-       
-    /**
-     * Calculate commission fees.
-     *
-     * @return array
-     */
-    private function calculateFees()
-    {
+        $this->validator->validateOperations($operations);
+        
         $fees = [];
-        foreach ($this->operations as $operationData) {
+        foreach ($operations as $operationData) {
             $operation = new Operation($operationData[0], $operationData[3], $operationData[4], $operationData[5]);
             $person = $this->getPerson($operationData[1]);
             if (!$person) {
@@ -266,17 +252,5 @@ class Calculator
         }
         
         throw new \Exception('Unknown person type in class mapping.');
-    }
-    
-    /**
-     * Set operations to be calculated.
-     *
-     * @param array $operations
-     */
-    public function setOperations($operations)
-    {
-        $this->validator->validateOperations($operations);
-        
-        $this->operations = $operations;
     }
 }

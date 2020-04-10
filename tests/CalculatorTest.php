@@ -29,8 +29,8 @@ class CalculatorTest extends TestCase
         $validator = new InputValidator($mConfigurationProvider->getSupportedCurrencies());
         $moneyCalculator = new MoneyCalculator($mConfigurationProvider);
         $configurationProvider = new FeeConfigurationProvider();
-        $calculator = new Calculator($operations, $validator, $configurationProvider, $moneyCalculator);
-        $result = $calculator->getFees();
+        $calculator = new Calculator($validator, $configurationProvider, $moneyCalculator);
+        $result = $calculator->calculateFees($operations);
 
         $this->assertSame($expectedResult, $result);
     }

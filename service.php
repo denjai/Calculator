@@ -10,18 +10,18 @@ try {
     
     $filePath = $argv[1];
     $parser = new \App\Parser();
-    $parser->loadCsvFile($filePath);
+    $operations = $parser->loadCsvFile($filePath);
     
     $mConfigurationProvider = new \App\Configuration\MoneyConfigurationProvider();
     $validator = new \App\Validation\InputValidator($mConfigurationProvider->getSupportedCurrencies());
     $moneyCalculator = new \App\MoneyCalculator($mConfigurationProvider);
     $configurationProvider = new \App\Configuration\FeeConfigurationProvider();
-    $calculator = new \App\Calculator($parser->getData(), $validator, $configurationProvider, $moneyCalculator);
+    $calculator = new \App\Calculator($validator, $configurationProvider, $moneyCalculator);
 
-    $fees = $calculator->getFees();
+    $fees = $calculator->calculateFees($operations);
 
     $writer = new \App\IO\OutputWriter();
-    $writer->writeToStandartOutput($fee);
+    $writer->writeToStandartOutput($fees);
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;
 }

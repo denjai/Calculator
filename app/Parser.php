@@ -10,16 +10,14 @@ namespace App;
 class Parser
 {
     /**
-     * @var array
-     */
-    private $data;
-    
-    /**
      * Load csv file into an array.
      *
      * @param string $path
      * @param string $delimiter
      * @param string $enclosure
+     * 
+     * @return array
+     * 
      * @throws \Exception
      */
     public function loadCsvFile($path, $delimiter = ',', $enclosure = '')
@@ -28,16 +26,6 @@ class Parser
             throw new \InvalidArgumentException('File path not found: ' . $path);
         }
         
-        $this->data = array_map('str_getcsv', file($path), [$delimiter, $enclosure]);
-    }
-    
-    /**
-     * Get parsed data.
-     *
-     * @return array
-     */
-    public function getData()
-    {
-        return $this->data;
+        return array_map('str_getcsv', file($path), [$delimiter, $enclosure]);
     }
 }
