@@ -85,33 +85,18 @@ class MoneyCalculator
     {
         return bcmul($amount, (string) $multiplier, $this->scale);
     }
-
+    
+    /**
+     * Divide
+     *
+     * @param string $amount
+     * @param string $divisor
+     *
+     * @return string
+     */
     public function divide($amount, $divisor)
     {
         return bcdiv($amount, (string) $divisor, $this->scale);
-    }
-    
-    /**
-     * Set scale
-     *
-     * @param int $scale
-     *
-     * @return MoneyCalculator
-     */
-    public function setScale($scale)
-    {
-        $this->scale = $scale;
-        return $this;
-    }
-
-    /**
-     * Get scale
-     *
-     * @return int
-     */
-    public function getScale()
-    {
-        return $this->scale;
     }
     
     /**

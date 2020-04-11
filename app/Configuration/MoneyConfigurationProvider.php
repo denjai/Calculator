@@ -84,18 +84,6 @@ class MoneyConfigurationProvider implements MoneyConfigurationProviderInterface
     }
     
     /**
-     * Add supported currency.
-     *
-     * @param string $currency
-     */
-    public function addSupportedCurrency($currency)
-    {
-        if (!isset($this->supportedCurrencies[$currency])) {
-            $this->supportedCurrencies[] = $currency;
-        }
-    }
-    
-    /**
      * Get currency conversion rate.
      *
      * @param string $currFrom
@@ -111,18 +99,6 @@ class MoneyConfigurationProvider implements MoneyConfigurationProviderInterface
         }
         
         return false;
-    }
-
-    /**
-     * Add conversion rate.
-     *
-     * @param string $currFrom
-     * @param string $currTo
-     * @param string $rate
-     */
-    public function addConversionRate($currFrom, $currTo, $rate)
-    {
-        $this->conversionRates[$currFrom . ':' . $currTo] = $rate;
     }
     
     /**

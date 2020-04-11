@@ -26,7 +26,7 @@ class CalculatorTest extends TestCase
      * @dataProvider dataProviderCalculatFees
      */
     public function testCalculateFees($operations, $expectedResult)
-    { 
+    {
         $mConfigurationProvider = new MoneyConfigurationProvider();
         $validator = new InputValidator($mConfigurationProvider->getSupportedCurrencies());
         $moneyCalculator = new MoneyCalculator($mConfigurationProvider);

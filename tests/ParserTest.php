@@ -4,6 +4,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use App\Parser;
+
 /**
  * Test Parser class.
  *
@@ -13,26 +14,27 @@ class ParserTest extends TestCase
 {
     private $parser;
     
-    public function setUp() {
+    public function setUp()
+    {
         $this->parser = new Parser();
     }
     
     /**
-     * 
+     *
      * @param string $filePath
      * @param array $expected
-     * 
+     *
      * @dataProvider dataProviderLoadCsvFile
      */
     public function testLoadCsvFile($filePath, $expected)
-    { 
+    {
         $parsedData = $this->parser->loadCsvFile($filePath);
         
         $this->assertSame($expected, $parsedData);
     }
     
     public function testCanNotLoadFromIvalidFilePath()
-    { 
+    {
         $this->expectException(\InvalidArgumentException::class);
         
         $this->parser->loadCsvFile('./invalidpath/nofile.csv');
@@ -42,7 +44,7 @@ class ParserTest extends TestCase
     {
         return [
             [
-                'input.csv' , 
+                'input.csv' ,
                 [
                     ['2014-12-31', '4', 'natural', 'cash_out', '1200.00', 'EUR'],
                     ['2015-01-01', '4', 'natural', 'cash_out', '1000.00', 'EUR'],

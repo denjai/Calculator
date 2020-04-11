@@ -18,7 +18,7 @@ try {
     $configurationProvider = new \App\Configuration\FeeConfigurationProvider();
     $personRepo = new \App\Repositories\PersonRepository();
     $personFactory = new App\Factories\PersonFactory();
-    $calculator = new \App\Calculator($validator, $configurationProvider, $moneyCalculator, $personRepo , $personFactory);
+    $calculator = new \App\Calculator($validator, $configurationProvider, $moneyCalculator, $personRepo, $personFactory);
 
     $fees = $calculator->calculateFees($operations);
 
