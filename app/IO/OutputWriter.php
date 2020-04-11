@@ -15,10 +15,10 @@ class OutputWriter
      *
      * @param array $data
      */
-    public function writeToStandartOutput(array $data)
+    public function writeToStandardOutput(array $data)
     {
         foreach ($data as $row) {
-            $this->writeLineToStandartOutput($row);
+            $this->writeLineToStandardOutput($row);
         }
     }
     
@@ -27,7 +27,7 @@ class OutputWriter
      *
      * @param string $text
      */
-    public function writeLineToStandartOutput(string $text)
+    public function writeLineToStandardOutput(string $text)
     {
         fwrite(STDOUT, $text . PHP_EOL);
     }

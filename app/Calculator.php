@@ -64,7 +64,7 @@ class Calculator
     }
         
     /**
-     * Calculates and returns commission fees for given set of opearations.
+     * Calculates and returns commission fees for given set of operations.
      *
      * @param array $operations
      *
@@ -94,10 +94,10 @@ class Calculator
     /**
      * Calculate commission fee for given operation.
      *
-     * @param \App\Entity\Operation $operation
+     * @param \App\Operation $operation
      * @param \App\Person $person
      *
-     * @return array
+     * @return string
      * @throws \Exception
      */
     private function calculateFee(Operation $operation, Person $person)
@@ -149,7 +149,7 @@ class Calculator
             return $this->calculateCashOutFeeForNaturalPerson($operation, $person);
         }
         
-        return $this->calculateCashOutFeeDefault();
+        return $this->calculateCashOutFeeDefault($operation);
     }
     
     /**
@@ -182,7 +182,7 @@ class Calculator
         //check free weekly cash out count limit
         if ($person->getCashOutCountForWeek($operation->getWeekNumber())
                 > $this->configurationProvider->getWeeklyCashOutCountLimit()) {
-            //operation count is above free weekly acount limit
+            //operation count is above free weekly count limit
             return $this->calculateCashOutFeeDefault($operation); //use default rates
         }
         

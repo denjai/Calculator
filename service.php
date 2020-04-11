@@ -13,9 +13,9 @@ try {
     $operations = $parser->loadCsvFile($filePath);
     
     $currencyPrecisions = ['EUR' => 2, 'USD' => 2, 'JPY' => 0];
-    $сupportedCurrencies = ['EUR', 'USD', 'JPY']; 
+    $supportedCurrencies = ['EUR', 'USD', 'JPY'];
     $conversionRates = ['EUR:USD' => '1.1497', 'EUR:JPY' => '129.53'];
-    $mConfigurationProvider = new \App\Configuration\MoneyConfigurationProvider($currencyPrecisions, $сupportedCurrencies, $conversionRates);
+    $mConfigurationProvider = new \App\Configuration\MoneyConfigurationProvider($currencyPrecisions, $supportedCurrencies, $conversionRates);
     
     $validator = new \App\Validation\InputValidator($mConfigurationProvider->getSupportedCurrencies());
     $moneyCalculator = new \App\MoneyCalculator($mConfigurationProvider);
@@ -30,7 +30,7 @@ try {
     $fees = $calculator->calculateFees($operations);
 
     $writer = new \App\IO\OutputWriter();
-    $writer->writeToStandartOutput($fees);
+    $writer->writeToStandardOutput($fees);
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;
 }

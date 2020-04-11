@@ -33,7 +33,7 @@ class ParserTest extends TestCase
         $this->assertSame($expected, $parsedData);
     }
     
-    public function testCanNotLoadFromIvalidFilePath()
+    public function testCanNotLoadFromInvalidFilePath()
     {
         $this->expectException(\InvalidArgumentException::class);
         

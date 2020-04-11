@@ -12,7 +12,7 @@ use App\Repositories\PersonRepository;
 use App\Factories\PersonFactory;
 
 /**
- * Tets for Calculator class.
+ * Test for Calculator class.
  *
  * @author Doncho Toromanov
  */
@@ -34,10 +34,10 @@ class CalculatorTest extends TestCase
         parent::setUp();
         
         $currencyPrecisions = ['EUR' => 2, 'USD' => 2, 'JPY' => 0];
-        $сupportedCurrencies = ['EUR', 'USD', 'JPY'];
+        $supportedCurrencies = ['EUR', 'USD', 'JPY'];
         $conversionRates = ['EUR:USD' => '1.1497', 'EUR:JPY' => '129.53'];
 
-        $this->moneyConfigurationProvider = new MoneyConfigurationProvider($currencyPrecisions, $сupportedCurrencies, $conversionRates);
+        $this->moneyConfigurationProvider = new MoneyConfigurationProvider($currencyPrecisions, $supportedCurrencies, $conversionRates);
         
         $this->feeConfigurationProvider =  new FeeConfigurationProvider('0.3', '0.03', ['5', 'EUR'], ['0.5', 'EUR'], ['1000', 'EUR'], 3);
     }
@@ -46,7 +46,7 @@ class CalculatorTest extends TestCase
      * @param array $operations
      * @param array $expectedResult
      *
-     * @dataProvider dataProviderCalculatFees
+     * @dataProvider dataProviderCalculateFees
      */
     public function testCalculateFees($operations, $expectedResult)
     {
@@ -60,7 +60,7 @@ class CalculatorTest extends TestCase
         $this->assertSame($expectedResult, $result);
     }
     
-    public function dataProviderCalculatFees()
+    public function dataProviderCalculateFees()
     {
         return [
             [
@@ -79,7 +79,7 @@ class CalculatorTest extends TestCase
                     ['2016-02-15', 1, 'natural', 'cash_out', '300.00', 'EUR'],
                     ['2016-02-19', 5, 'natural', 'cash_out', '3000000', 'JPY'],
                 ],
-                [ //expected commision fees
+                [ //expected commission fees
                     '0.60',
                     '3.00',
                     '0.00',

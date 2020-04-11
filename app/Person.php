@@ -4,8 +4,6 @@ namespace App;
 
 use App\MoneyCalculator;
 use App\Operation;
-use App\Configuration\FeeConfigurationProvider;
-use App\Configuration\FeeConfigurationProviderInterface;
 
 /**
  * Entity for Person
