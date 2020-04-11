@@ -8,6 +8,8 @@ use App\MoneyCalculator;
 use App\Configuration\MoneyConfigurationProvider;
 use App\Configuration\FeeConfigurationProvider;
 use App\Validation\InputValidator;
+use App\Repositories\PersonRepository;
+use App\Factories\PersonFactory;
 
 /**
  * Tets for Calculator class.
@@ -29,7 +31,9 @@ class CalculatorTest extends TestCase
         $validator = new InputValidator($mConfigurationProvider->getSupportedCurrencies());
         $moneyCalculator = new MoneyCalculator($mConfigurationProvider);
         $configurationProvider = new FeeConfigurationProvider();
-        $calculator = new Calculator($validator, $configurationProvider, $moneyCalculator);
+        $personRepository = new PersonRepository();
+        $personFactory = new PersonFactory();
+        $calculator = new Calculator($validator, $configurationProvider, $moneyCalculator, $personRepository, $personFactory);
         $result = $calculator->calculateFees($operations);
 
         $this->assertSame($expectedResult, $result);

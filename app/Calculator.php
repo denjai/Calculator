@@ -2,6 +2,12 @@
 
 namespace App;
 
+use App\Validation\InputValidator;
+use App\Configuration\FeeConfigurationProviderInterface;
+use App\Repositories\PersonRepositoryInterface;
+use App\Factories\PersonFactory;
+use App\MoneyCalculator;
+
 /**
  * Commission fee calculator.
  *
@@ -9,19 +15,6 @@ namespace App;
  */
 class Calculator
 {
-    /**
-     * @var array
-     */
-    private $persons;
-    
-    /**
-     * @var array
-     */
-    private $personClassMap = [
-        'natural' => NaturalPerson::class,
-        'legal' => LegalPerson::class
-    ];
-    
     /**
      * @var \App\Validation\InputValidator
      */
@@ -38,24 +31,43 @@ class Calculator
     protected $configurationProvider;
     
     /**
+     * @var \App\Repositories\PersonRepositoryInterface
+     */
+    private $personRepository;
+    
+    /**
+     * @var \App\Factories\PersonFactory
+     */
+    private $personFactory;
+    
+    /**
      * Class constructor.
      *
      * @param \App\Validation\InputValidator $validator
      * @param \App\Configuration\FeeConfigurationProviderInterface $configurationProvider
      * @param \App\MoneyCalculator $calculator
+     * @param \App\Repositories\PersonRepositoryInterface
+     * @param \App\Factories\PersonFactory
      */
-    public function __construct($validator, $configurationProvider, $calculator)
-    {
+    public function __construct(
+        InputValidator $validator,
+        FeeConfigurationProviderInterface $configurationProvider,
+        MoneyCalculator $calculator,
+        PersonRepositoryInterface $personRepository,
+        PersonFactory $personFactory
+    ) {
         $this->validator = $validator;
         $this->configurationProvider = $configurationProvider;
         $this->calculator = $calculator;
+        $this->personRepository = $personRepository;
+        $this->personFactory = $personFactory;
     }
         
     /**
      * Calculates and returns commission fees for given set of opearations.
      *
      * @param array $operations
-     * 
+     *
      * @return array
      */
     public function calculateFees($operations)
@@ -65,15 +77,16 @@ class Calculator
         $fees = [];
         foreach ($operations as $operationData) {
             $operation = new Operation($operationData[0], $operationData[3], $operationData[4], $operationData[5]);
-            $person = $this->getPerson($operationData[1]);
+            $person = $this->personRepository->getPerson($operationData[1]);
             if (!$person) {
-                $person = $this->createPerson($operationData[2], $operationData[1]);
-                $this->addPerson($person);
+                $person = $this->personFactory->create($operationData[2], $operationData[1], $this->calculator);
+                $this->personRepository->addPerson($person);
             }
             $person->addOperation($operation);
                             
             $fees[] = $this->calculateFee($operation, $person);
         }
+        $this->personRepository->deleteAll();
         
         return $fees;
     }
@@ -211,46 +224,5 @@ class Calculator
         $fee = $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
 
         return $fee;
-    }
-    
-    /**
-     * Get person by ID.
-     *
-     * @param int $id
-     * @return \App\Person
-     */
-    private function getPerson($id)
-    {
-        return $this->persons[$id] ?? null;
-    }
-    
-    /**
-     * Add person.
-     *
-     * @param \App\Person $person
-     */
-    private function addPerson($person)
-    {
-        $this->persons[$person->getId()] = $person;
-    }
-    
-    /**
-     * Create new person entity.
-     *
-     * @param string $type
-     * @param int $id
-     * @return \App\Person
-     * @throws \Exception
-     */
-    private function createPerson($type, $id)
-    {
-        if (isset($this->personClassMap[$type])) {
-            if (class_exists($this->personClassMap[$type])) {
-                return new $this->personClassMap[$type]($id, $this->calculator);
-            }
-            throw new \Exception('Unknown person class in class mapping.');
-        }
-        
-        throw new \Exception('Unknown person type in class mapping.');
     }
 }

@@ -15,9 +15,9 @@ class Parser
      * @param string $path
      * @param string $delimiter
      * @param string $enclosure
-     * 
+     *
      * @return array
-     * 
+     *
      * @throws \Exception
      */
     public function loadCsvFile($path, $delimiter = ',', $enclosure = '')

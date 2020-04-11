@@ -24,7 +24,7 @@ class OutputWriter
     
     /**
      * Outputs single line to stdout.
-     * 
+     *
      * @param string $text
      */
     public function writeLineToStandartOutput(string $text)

@@ -16,7 +16,9 @@ try {
     $validator = new \App\Validation\InputValidator($mConfigurationProvider->getSupportedCurrencies());
     $moneyCalculator = new \App\MoneyCalculator($mConfigurationProvider);
     $configurationProvider = new \App\Configuration\FeeConfigurationProvider();
-    $calculator = new \App\Calculator($validator, $configurationProvider, $moneyCalculator);
+    $personRepo = new \App\Repositories\PersonRepository();
+    $personFactory = new App\Factories\PersonFactory();
+    $calculator = new \App\Calculator($validator, $configurationProvider, $moneyCalculator, $personRepo , $personFactory);
 
     $fees = $calculator->calculateFees($operations);
 
