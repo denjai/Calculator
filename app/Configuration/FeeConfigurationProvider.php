@@ -12,32 +12,63 @@ class FeeConfigurationProvider implements FeeConfigurationProviderInterface
     /**
      * @var string
      */
-    protected static $defaultCashOutFee = '0.3';
+    protected $cashOutFee;
     
     /**
      * @var string
      */
-    protected static $defaultCashInFee = '0.03';
+    protected $cashInFee;
     
     /**
      * @var array
      */
-    protected static $defaultMaxCashInFee = ['5', 'EUR'];
+    protected $maxCashInFee;
     
     /**
      * @var array
      */
-    protected static $defaultMinCashOutFee = ['0.5', 'EUR'];
+    protected $minCashOutFee;
     
     /**
      * @var array
      */
-    protected static $weeklyCashOutAmountLimit = ['1000', 'EUR'];
+    protected $weeklyCashOutAmountLimit;
     
     /**
      * @var int
      */
-    protected static $weeklyCashOutCountLimit = 3;
+    protected $weeklyCashOutCountLimit;
+    
+    /**
+     * Class constructor.
+     *
+     * @param string $cashOutFee
+     * @param string $cashInFee
+     * @param array $maxCashInFee
+     * @param array $minCashOutFee
+     * @param array $weeklyCashOutAmountLimit
+     * @param int $weeklyCashOutCountLimit
+     */
+    public function __construct(
+        $cashOutFee,
+        $cashInFee,
+        $maxCashInFee,
+        $minCashOutFee,
+        $weeklyCashOutAmountLimit,
+        $weeklyCashOutCountLimit
+    ) {
+        $this->cashOutFee = $cashOutFee;
+        
+        $this->cashInFee = $cashInFee;
+        
+        $this->maxCashInFee = $maxCashInFee;
+        
+        $this->minCashOutFee = $minCashOutFee;
+
+        $this->weeklyCashOutAmountLimit = $weeklyCashOutAmountLimit;
+
+        $this->weeklyCashOutCountLimit = $weeklyCashOutCountLimit;
+    }
     
     /**
      * Get cash out fee percentage.
@@ -46,7 +77,7 @@ class FeeConfigurationProvider implements FeeConfigurationProviderInterface
      */
     public function getCashOutFeePercentage()
     {
-        return self::$defaultCashOutFee;
+        return $this->cashOutFee;
     }
     
     /**
@@ -56,7 +87,7 @@ class FeeConfigurationProvider implements FeeConfigurationProviderInterface
      */
     public function getCashInFeePercentage()
     {
-        return self::$defaultCashInFee;
+        return $this->cashInFee;
     }
     
     /**
@@ -66,7 +97,7 @@ class FeeConfigurationProvider implements FeeConfigurationProviderInterface
      */
     public function getMaxCashInFee()
     {
-        return self::$defaultMaxCashInFee;
+        return $this->maxCashInFee;
     }
     
     /**
@@ -76,7 +107,7 @@ class FeeConfigurationProvider implements FeeConfigurationProviderInterface
      */
     public function getMinCashOutFee()
     {
-        return self::$defaultMinCashOutFee;
+        return  $this->minCashOutFee;
     }
     
     /**
@@ -86,7 +117,7 @@ class FeeConfigurationProvider implements FeeConfigurationProviderInterface
      */
     public function getWeeklyCashOutCountLimit()
     {
-        return self::$weeklyCashOutCountLimit;
+        return $this->weeklyCashOutCountLimit;
     }
     
     /**
@@ -96,6 +127,6 @@ class FeeConfigurationProvider implements FeeConfigurationProviderInterface
      */
     public function getWeeklyCashOutAmountLimit()
     {
-        return self::$weeklyCashOutAmountLimit;
+        return $this->weeklyCashOutAmountLimit;
     }
 }

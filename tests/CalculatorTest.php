@@ -19,6 +19,29 @@ use App\Factories\PersonFactory;
 class CalculatorTest extends TestCase
 {
     /**
+     * @var \App\Configuration\MoneyConfigurationProviderInterface
+     */
+    private $moneyConfigurationProvider;
+    
+    /**
+     *
+     * @var \App\Configuration\FeeConfigurationProviderInterface
+     */
+    private $feeConfigurationProvider;
+    
+    public function setUp()
+    {
+        parent::setUp();
+        
+        $currencyPrecisions = ['EUR' => 2, 'USD' => 2, 'JPY' => 0];
+        $сupportedCurrencies = ['EUR', 'USD', 'JPY'];
+        $conversionRates = ['EUR:USD' => '1.1497', 'EUR:JPY' => '129.53'];
+
+        $this->moneyConfigurationProvider = new MoneyConfigurationProvider($currencyPrecisions, $сupportedCurrencies, $conversionRates);
+        
+        $this->feeConfigurationProvider =  new FeeConfigurationProvider('0.3', '0.03', ['5', 'EUR'], ['0.5', 'EUR'], ['1000', 'EUR'], 3);
+    }
+    /**
      *
      * @param array $operations
      * @param array $expectedResult
@@ -27,13 +50,11 @@ class CalculatorTest extends TestCase
      */
     public function testCalculateFees($operations, $expectedResult)
     {
-        $mConfigurationProvider = new MoneyConfigurationProvider();
-        $validator = new InputValidator($mConfigurationProvider->getSupportedCurrencies());
-        $moneyCalculator = new MoneyCalculator($mConfigurationProvider);
-        $configurationProvider = new FeeConfigurationProvider();
+        $validator = new InputValidator($this->moneyConfigurationProvider->getSupportedCurrencies());
+        $moneyCalculator = new MoneyCalculator($this->moneyConfigurationProvider);
         $personRepository = new PersonRepository();
         $personFactory = new PersonFactory();
-        $calculator = new Calculator($validator, $configurationProvider, $moneyCalculator, $personRepository, $personFactory);
+        $calculator = new Calculator($validator, $this->feeConfigurationProvider, $moneyCalculator, $personRepository, $personFactory);
         $result = $calculator->calculateFees($operations);
 
         $this->assertSame($expectedResult, $result);

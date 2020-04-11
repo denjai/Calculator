@@ -12,14 +12,21 @@ try {
     $parser = new \App\Parser();
     $operations = $parser->loadCsvFile($filePath);
     
-    $mConfigurationProvider = new \App\Configuration\MoneyConfigurationProvider();
+    $currencyPrecisions = ['EUR' => 2, 'USD' => 2, 'JPY' => 0];
+    $сupportedCurrencies = ['EUR', 'USD', 'JPY']; 
+    $conversionRates = ['EUR:USD' => '1.1497', 'EUR:JPY' => '129.53'];
+    $mConfigurationProvider = new \App\Configuration\MoneyConfigurationProvider($currencyPrecisions, $сupportedCurrencies, $conversionRates);
+    
     $validator = new \App\Validation\InputValidator($mConfigurationProvider->getSupportedCurrencies());
     $moneyCalculator = new \App\MoneyCalculator($mConfigurationProvider);
-    $configurationProvider = new \App\Configuration\FeeConfigurationProvider();
+    
+    $configurationProvider = new \App\Configuration\FeeConfigurationProvider('0.3', '0.03', ['5', 'EUR'], ['0.5', 'EUR'], ['1000', 'EUR'], 3);
     $personRepo = new \App\Repositories\PersonRepository();
     $personFactory = new App\Factories\PersonFactory();
+    
     $calculator = new \App\Calculator($validator, $configurationProvider, $moneyCalculator, $personRepo, $personFactory);
 
+    //calculate fees
     $fees = $calculator->calculateFees($operations);
 
     $writer = new \App\IO\OutputWriter();

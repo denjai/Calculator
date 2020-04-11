@@ -9,28 +9,8 @@ namespace App\Configuration;
  */
 class MoneyConfigurationProvider implements MoneyConfigurationProviderInterface
 {
-    const DEFAULT_PRECISION = 2;
     const DEFAULT_CURRENCY = 'EUR';
 
-    /**
-     * @var array
-     */
-    protected static $defaultCurrencyPrecisions = [
-        'EUR' => 2,
-        'USD' => 2,
-        'JPY' => 0
-        ];
-    
-    /**
-     * @var array
-     */
-    protected static $defaultSupportedCurrencies = ['EUR', 'USD', 'JPY'];
-    
-    /**
-     * @var array
-     */
-    protected static $defaultConversionRates = ['EUR:USD' => '1.1497', 'EUR:JPY' => '129.53'];
-    
     /**
      * @var array
      */
@@ -51,18 +31,15 @@ class MoneyConfigurationProvider implements MoneyConfigurationProviderInterface
      *
      * @param array $currencyPrecisions
      * @param array $supportedCurrencies
+     * @param array $conversionRates
      */
-    public function __construct(array $currencyPrecisions = null, array $supportedCurrencies = null)
+    public function __construct(array $currencyPrecisions, array $supportedCurrencies, array $conversionRates)
     {
-        $this->supportedCurrencies = isset($supportedCurrencies)
-            ? $supportedCurrencies
-            : self::$defaultSupportedCurrencies;
+        $this->supportedCurrencies = $supportedCurrencies;
                 
-        $this->currencyPrecisions = isset($currencyPrecisions)
-            ? $currencyPrecisions
-            : self::$defaultCurrencyPrecisions;
+        $this->currencyPrecisions = $currencyPrecisions;
         
-        $this->conversionRates = self::$defaultConversionRates;
+        $this->conversionRates = $conversionRates;
     }
 
     /**
@@ -71,11 +48,11 @@ class MoneyConfigurationProvider implements MoneyConfigurationProviderInterface
      * @param string $currency
      * @return int
      */
-    public function getDefaultPrecision($currency)
+    public function getDefaultPrecision($currency, $defaultPrecision = 2)
     {
         return isset($this->currencyPrecisions[$currency])
             ? $this->currencyPrecisions[$currency]
-            : self::DEFAULT_PRECISION;
+            : $defaultPrecision;
     }
 
     public function getSupportedCurrencies()
