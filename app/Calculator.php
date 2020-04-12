@@ -221,8 +221,7 @@ class Calculator
     {
         $cashOutFeePercentage = $this->configurationProvider->getCashOutFeePercentage();
         $feeMultiplier = $this->calculator->divide($cashOutFeePercentage, '100');
-        $fee = $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
-
-        return $fee;
+        
+        return $this->calculator->multiply($operation->getAmount(), $feeMultiplier);
     }
 }
