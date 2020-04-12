@@ -17,6 +17,8 @@ class MoneyCalculatorTest extends TestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
         $currencyPrecisions = ['EUR' => 2, 'USD' => 2, 'JPY' => 0, 'IQD' => 3];
         $supportedCurrencies = ['EUR', 'USD', 'JPY'];
         $conversionRates = ['EUR:USD' => '1.1497', 'EUR:JPY' => '129.53'];
